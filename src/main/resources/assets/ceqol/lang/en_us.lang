@@ -1,0 +1,8 @@
+ceqol.config.temperature=Temperature HUD
+ceqol.config.controls=Visual controls
+ceqol.config.thirst=Hydration preview
+ceqol.config.quality=Quality display: on
+ceqol.config.window_small=Enlarge the window to adjust settings.
+ceqol.config.thirst.tooltip=Tooltip droplets: %s
+ceqol.config.thirst.hud=Held HUD preview: %s
+ceqol.config.thirst.shift=Shift-only details: %s

@@ -1,0 +1,8 @@
+reforgingquality.title=Tool Quality
+reforgingquality.short_title=Quality
+reforgingquality.hint=Hover for full attributes
+reforgingquality.short_hint=Details
+reforgingquality.empty=Insert a tool
+reforgingquality.normal=Normal
+reforgingquality.unassigned=No quality assigned
+reforgingquality.unknown=Unknown quality

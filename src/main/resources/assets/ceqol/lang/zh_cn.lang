@@ -1,0 +1,8 @@
+ceqol.config.temperature=温度 HUD
+ceqol.config.controls=可视化按键
+ceqol.config.thirst=补水预览
+ceqol.config.quality=品质显示：已启用
+ceqol.config.window_small=请放大窗口后调整设置。
+ceqol.config.thirst.tooltip=物品提示水滴：%s
+ceqol.config.thirst.hud=手持补水预览：%s
+ceqol.config.thirst.shift=仅按 Shift 时显示详情：%s

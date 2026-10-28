@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:3.0.197' }
+}
+apply plugin: 'net.minecraftforge.gradle'
+
+version = '1.0.0'
+group = 'dev.rlcraftceaddons'
+archivesBaseName = 'ceqol'
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+minecraft { mappings channel: 'stable', version: '39-1.12' }
+repositories {
+    mavenCentral()
+    flatDir { dirs 'libs' }
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    implementation fg.deobf('local:SimpleDifficulty-1.12.2:0.3.9')
+    compileOnly files('libs/QualityTools-1.0.7_for_1.12.2.jar')
+    compileOnly fg.deobf('local:xaerolib-forge-1.12.2:1.7.3')
+    compileOnly fg.deobf('local:xaerominimap-forge-1.12.2:26.6.0')
+    compileOnly fg.deobf('local:xaeroworldmap-forge-1.12.2:1.47.0')
+    testImplementation 'junit:junit:4.12'
+    testImplementation fg.deobf('local:xaerolib-forge-1.12.2:1.7.3')
+    testImplementation fg.deobf('local:xaerominimap-forge-1.12.2:26.6.0')
+}
+test {
+    def rules = file(project.findProperty('packRules') ?: '../../config/simpledifficulty/consumableThirst.json')
+    if (rules.isFile()) systemProperty 'thirstpreview.packRules', rules.absolutePath
+    if (project.hasProperty('gravestoneJar')) {
+        systemProperty 'thirstpreview.gravestoneJar', file(project.property('gravestoneJar')).absolutePath
+    }
+}
+processResources {
+    inputs.property 'version', project.version
+    from(sourceSets.main.resources.srcDirs) { include 'mcmod.info'; expand version: project.version }
+    from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+}
+jar.finalizedBy('reobfJar')
