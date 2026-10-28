@@ -1,5 +1,6 @@
 package dev.rlcraftceaddons.ceqol;
 
+import com.northwestwind.forgeautofish.AutoFishModule;
 import dev.rlcraftceaddons.reforgingquality.ReforgingQuality;
 import dev.rlcraftceaddons.sdtemperaturehud.SDTemperatureHud;
 import dev.rlcraftceaddons.thirstpreview.ThirstPreview;
@@ -10,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /** One Forge identity; the feature packages retain their existing resources and settings. */
-@Mod(modid = CEQoL.MODID, name = "CE QoL", version = "1.0.0",
+@Mod(modid = CEQoL.MODID, name = "CE QoL", version = "1.1.0",
         acceptedMinecraftVersions = "[1.12.2]", clientSideOnly = true,
         acceptableRemoteVersions = "*",
         dependencies = "required-after:simpledifficulty@[0.3.9,0.4);required-after:qualitytools@[1.0.7_for_1.12.2];after:appleskin;after:controlling",
@@ -29,6 +30,7 @@ public final class CEQoL {
         new ReforgingQuality().init(event);
         new VisualControls().init(event);
         new SDTemperatureHud().initialize(event);
+        AutoFishModule.initialize();
     }
 
     @Mod.EventHandler

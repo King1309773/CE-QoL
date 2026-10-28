@@ -2,11 +2,12 @@
   {
     "modid": "ceqol",
     "name": "CE QoL / 便捷增强",
-    "description": "重铸台品质显示、可视化按键、温度 HUD 与水滴补水预览。Reforging quality, visual controls, temperature HUD and thirst preview in one client mod.",
+    "description": "重铸台品质显示、可视化按键、温度 HUD、水滴补水预览和自动钓鱼。Five client quality-of-life features in one mod.",
     "version": "${version}",
     "mcversion": "1.12.2",
     "guiFactory": "dev.rlcraftceaddons.ceqol.client.CEQoLGuiFactory",
     "authorList": ["KingJJ"],
+    "credits": "AutoFish original by NorthWestWind; local stable-fishing fixes and integration by KingJJ.",
     "dependencies": ["simpledifficulty", "qualitytools"]
   }
 ]

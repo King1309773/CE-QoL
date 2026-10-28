@@ -1,6 +1,7 @@
 ceqol.config.temperature=Temperature HUD
 ceqol.config.controls=Visual controls
 ceqol.config.thirst=Hydration preview
+ceqol.config.autofish=AutoFish key binding
 ceqol.config.quality=Quality display: on
 ceqol.config.window_small=Enlarge the window to adjust settings.
 ceqol.config.thirst.tooltip=Tooltip droplets: %s

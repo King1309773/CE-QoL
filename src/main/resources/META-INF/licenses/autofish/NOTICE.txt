@@ -1,0 +1,32 @@
+AutoFish component provenance
+
+Original project: AutoFish for Forge / AutoFish
+Original author: NorthWestWind
+Upstream repository: https://github.com/North-West-Wind/AutoFish
+Historical source reference: a6a57e150b484353d913a46219b28351215e4183
+
+Local base: forgeautofish-1.0.4-1.12.2-stablefix2.jar
+Base SHA-256: 119bf5b68de35564779bfd6a84c4abe165a4d37610243a870dc4f8cd72cfb179
+Local stable-fishing patch: 2026-10-19, made for this Minecraft instance.
+The local patch replaces motion-based bite detection with actual bite sounds,
+client END-tick actions and session-safe reel/recast state handling.
+CE QoL integration: 2026-10-28. The stable handler is retained with mapped
+Minecraft names; the original key identity and resource namespace are preserved.
+The unified entry point replaces the standalone AutoFish mod entry point.
+These changes are local adaptations, not an official NorthWestWind release.
+
+The historical source reference and the installed base JAR did not include a
+LICENSE file. The current upstream project publishes GNU GPL version 3 text;
+the adjacent LICENSE is an exact copy of that upstream text, verified as Git
+blob e72bfddabc15be5718a7cc061ac10e47741d8219.
+Source: https://raw.githubusercontent.com/North-West-Wind/AutoFish/master/LICENSE
+
+This notice records the AutoFish component's provenance. It does not assert
+that the historical JAR carried this license notice, attribute the original
+AutoFish project to the CE QoL author, or redefine the licensing of independent
+CE QoL components.
+
+AutoFish integration sources are included in the CE QoL source archive under:
+src/main/java/com/northwestwind/forgeautofish/handler/AutoFishHandler.java
+src/main/java/com/northwestwind/forgeautofish/keybind/KeyBinds.java
+src/main/java/com/northwestwind/forgeautofish/AutoFishModule.java

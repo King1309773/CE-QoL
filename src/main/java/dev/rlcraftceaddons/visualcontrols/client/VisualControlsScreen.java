@@ -48,7 +48,12 @@ public final class VisualControlsScreen extends GuiScreen {
     private boolean keyboardRepeatBefore;
     private boolean repeatCaptured;
 
-    public VisualControlsScreen(GuiScreen parent) { this.parent = parent; }
+    public VisualControlsScreen(GuiScreen parent) { this(parent, ""); }
+
+    public VisualControlsScreen(GuiScreen parent, String initialSearch) {
+        this.parent = parent;
+        this.searchText = initialSearch == null ? "" : initialSearch;
+    }
 
     private static String tr(String key, Object... args) { return I18n.format("visualcontrols." + key, args); }
 

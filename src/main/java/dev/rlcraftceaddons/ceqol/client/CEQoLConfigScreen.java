@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public final class CEQoLConfigScreen extends GuiScreen {
-    public static final int DONE = 0, TEMPERATURE = 1, CONTROLS = 2, THIRST = 3, QUALITY = 4;
+    public static final int DONE = 0, TEMPERATURE = 1, CONTROLS = 2, THIRST = 3, QUALITY = 4, AUTO_FISH = 5;
     private final GuiScreen parent;
     private boolean compact;
 
@@ -20,7 +20,7 @@ public final class CEQoLConfigScreen extends GuiScreen {
 
     @Override public void initGui() {
         buttonList.clear();
-        compact = width < 160 || height < 110;
+        compact = width < 160 || height < 132;
         int buttonWidth = Math.max(1, Math.min(280, width - 24));
         int left = (width - buttonWidth) / 2;
         if (compact) {
@@ -29,19 +29,21 @@ public final class CEQoLConfigScreen extends GuiScreen {
                     buttonWidth, buttonHeight, I18n.format("gui.done")));
             return;
         }
-        int buttonHeight = Math.min(20, Math.max(14, (height - 48) / 5));
-        int gap = Math.min(6, Math.max(2, (height - 36 - buttonHeight * 5) / 4));
-        int top = Math.max(28, (height - buttonHeight * 5 - gap * 4) / 2);
+        int buttonHeight = Math.min(20, Math.max(14, (height - 48) / 6));
+        int gap = Math.min(6, Math.max(2, (height - 36 - buttonHeight * 6) / 5));
+        int top = Math.max(28, (height - buttonHeight * 6 - gap * 5) / 2);
         addButton(new GuiButton(TEMPERATURE, left, top, buttonWidth, buttonHeight,
                 I18n.format("ceqol.config.temperature")));
         addButton(new GuiButton(CONTROLS, left, top + buttonHeight + gap, buttonWidth, buttonHeight,
                 I18n.format("ceqol.config.controls")));
         addButton(new GuiButton(THIRST, left, top + (buttonHeight + gap) * 2, buttonWidth, buttonHeight,
                 I18n.format("ceqol.config.thirst")));
-        GuiButton quality = addButton(new GuiButton(QUALITY, left, top + (buttonHeight + gap) * 3,
+        addButton(new GuiButton(AUTO_FISH, left, top + (buttonHeight + gap) * 3,
+                buttonWidth, buttonHeight, I18n.format("ceqol.config.autofish")));
+        GuiButton quality = addButton(new GuiButton(QUALITY, left, top + (buttonHeight + gap) * 4,
                 buttonWidth, buttonHeight, I18n.format("ceqol.config.quality")));
         quality.enabled = false;
-        addButton(new GuiButton(DONE, left, top + (buttonHeight + gap) * 4, buttonWidth, buttonHeight,
+        addButton(new GuiButton(DONE, left, top + (buttonHeight + gap) * 5, buttonWidth, buttonHeight,
                 I18n.format("gui.done")));
     }
 
@@ -51,6 +53,8 @@ public final class CEQoLConfigScreen extends GuiScreen {
         else if (button.id == TEMPERATURE) mc.displayGuiScreen(new GuiHudConfig(this));
         else if (button.id == CONTROLS) mc.displayGuiScreen(new VisualControlsScreen(this));
         else if (button.id == THIRST) mc.displayGuiScreen(new ThirstPreviewConfigScreen(this));
+        else if (button.id == AUTO_FISH) mc.displayGuiScreen(new VisualControlsScreen(this,
+                I18n.format("key.categories.forgeautofish")));
     }
 
     @Override protected void keyTyped(char typedChar, int keyCode) throws IOException {
