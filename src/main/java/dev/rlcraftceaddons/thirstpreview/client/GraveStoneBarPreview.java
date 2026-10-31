@@ -40,6 +40,11 @@ public final class GraveStoneBarPreview {
         capturedSettings = null;
     }
 
+    /** No held-item lookup is needed unless capture found an eligible bar. */
+    public boolean hasCapturedFrame() {
+        return capturedSettings != null && !disabled;
+    }
+
     /** Called at Post(ALL), LOW, before the target reserves its hydration row. */
     public void capture(int scaledWidth, int scaledHeight, boolean commonVisible, boolean nativeDisplay) {
         capturedSettings = null;

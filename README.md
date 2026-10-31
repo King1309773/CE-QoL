@@ -1,6 +1,6 @@
 # CE QoL / 便捷增强
 
-Minecraft Forge 1.12.2 客户端模组，当前版本 1.1.0 将以下五项功能整合到一个模组入口和一个安装文件：
+Minecraft Forge 1.12.2 客户端模组，当前版本 1.1.1 将以下五项功能整合到一个模组入口和一个安装文件：
 
 | 功能 | 合并来源 | 使用方式 |
 |---|---|---|
@@ -16,11 +16,15 @@ Minecraft Forge 1.12.2 客户端模组，当前版本 1.1.0 将以下五项功�
 
 环境为 Minecraft 1.12.2、Forge 14.23.5.2860、Java 8。保留 SimpleDifficulty 0.3.9、QualityTools 1.0.7 及它们原有的依赖。
 
-从 CE QoL 1.0.0 升级：退出游戏，备份并移出旧 CE QoL 和独立的 `forgeautofish` JAR，再安装 `ceqol-1.1.0.jar`。
+从 CE QoL 1.1.0 升级：退出游戏，备份并移出旧 CE QoL，再安装 `ceqol-1.1.1.jar`。从 1.0.0 升级时还需要移出独立的 `forgeautofish` JAR。
 
 首次从独立版切换：将 `reforgingquality`、`visualcontrols`、`sdtemperaturehud`、`thirstpreview`、`forgeautofish` 五个 JAR 移出 `mods` 并备份，再安装合并版。不能同时保留被合并的独立版或多个 CE QoL 版本。只需客户端安装。
 
 继续使用现有的 `config/sdtemperaturehud.cfg`、`config/thirstpreview.cfg`，无需重新设置温度布局、颜色和补水开关。按键绑定继续使用原版设置文件，包括 AutoFish 的原按键名称和绑定。模组列表中只显示一个 CE QoL 条目，点击配置可进入统一设置页。
+
+补水设置现在先在本页编辑，点击“保存”后统一生效；“取消”和 Esc 放弃本次修改。调整窗口尺寸不会丢失未保存的选项，悬停按钮可查看说明。配置值未变时不重写文件；保存仍保留其他配置项的值。温度设置页继续使用原来的应用、完成和取消方式。
+
+1.1.1 跳过未使用的横条 HUD 的手持物品解析，并在单次选择中避免对同一物品对象重复解析。补水结果不跨帧缓存，NBT 与实际规则变化仍会被即时读取；没有额外后台线程，也不改变自动钓鱼的时序。
 
 品质面板沿用原容器、槽位和重铸处理，不改品质概率、材料消耗或服务端规则。DebrisClient 自动重铸仍为可选适配；其开关由 DebrisClient 自身管理。
 

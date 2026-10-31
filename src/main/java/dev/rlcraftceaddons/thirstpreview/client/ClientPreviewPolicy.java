@@ -8,17 +8,20 @@ final class ClientPreviewPolicy {
 
     static <T, V> V resolveHeld(T mainHand, T offHand, Function<T, V> resolver) {
         V mainValue = resolver.apply(mainHand);
-        return mainValue != null ? mainValue : resolver.apply(offHand);
+        return mainValue != null || mainHand == offHand ? mainValue : resolver.apply(offHand);
     }
 
     static <T, V> V resolveHeld(T activeStack, T mainHand, T offHand, Function<T, V> resolver) {
+        if (activeStack == null) return resolveHeld(mainHand, offHand, resolver);
         if (activeStack != null) {
             V activeValue = resolver.apply(activeStack);
             if (activeValue != null) {
                 return activeValue;
             }
         }
-        return resolveHeld(mainHand, offHand, resolver);
+        V mainValue = mainHand == activeStack ? null : resolver.apply(mainHand);
+        if (mainValue != null) return mainValue;
+        return offHand == activeStack || offHand == mainHand ? null : resolver.apply(offHand);
     }
 
     static boolean shouldShowHud(boolean configured, boolean hideGui, boolean nativeHud,

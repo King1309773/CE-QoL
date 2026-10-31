@@ -7,6 +7,37 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ClientPreviewPolicyTest {
+    @Test public void nonHydratingActiveMainHandIsResolvedOnlyOnce() {
+        Object bow = new Object(), water = new Object();
+        List<Object> visited = new ArrayList<>();
+        String value = ClientPreviewPolicy.resolveHeld(bow, bow, water, stack -> {
+            visited.add(stack);
+            return stack == water ? "water" : null;
+        });
+        assertEquals("water", value);
+        assertEquals(Arrays.asList(bow, water), visited);
+    }
+
+    @Test public void nonHydratingActiveOffhandIsNotRetriedAfterMainHand() {
+        Object bow = new Object(), sword = new Object();
+        List<Object> visited = new ArrayList<>();
+        assertNull(ClientPreviewPolicy.resolveHeld(bow, sword, bow, stack -> {
+            visited.add(stack);
+            return null;
+        }));
+        assertEquals(Arrays.asList(bow, sword), visited);
+    }
+
+    @Test public void sharedMainAndOffhandObjectIsResolvedOnlyOnce() {
+        Object empty = new Object();
+        List<Object> visited = new ArrayList<>();
+        assertNull(ClientPreviewPolicy.resolveHeld(empty, empty, stack -> {
+            visited.add(stack);
+            return null;
+        }));
+        assertEquals(Arrays.asList(empty), visited);
+    }
+
     @Test
     public void nonDrinkableMainHandDoesNotHideOffhandDrink() {
         List<String> visited = new ArrayList<>();

@@ -49,4 +49,34 @@ public class ThirstPreviewConfigPersistenceTest {
     private String read(File file) throws Exception {
         return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
     }
+
+    @Test public void savingUnchangedSettingsDoesNotRewriteTheFile() throws Exception {
+        File file = temporary.newFile("unchanged.cfg");
+        Field home = FMLInjectionData.class.getDeclaredField("minecraftHome");
+        home.setAccessible(true);
+        Object oldHome = home.get(null);
+        Field remembered = ThirstPreviewConfig.class.getDeclaredField("configFile");
+        remembered.setAccessible(true);
+        Object oldFile = remembered.get(null);
+        boolean tooltip = ThirstPreviewConfig.showTooltip;
+        boolean hud = ThirstPreviewConfig.showHud;
+        boolean shift = ThirstPreviewConfig.showDetailsWithShift;
+        try {
+            home.set(null, temporary.getRoot());
+            ThirstPreviewConfig.load(file);
+            byte[] before = Files.readAllBytes(file.toPath());
+            java.nio.file.attribute.FileTime stamp = java.nio.file.attribute.FileTime.fromMillis(1000000L);
+            Files.setLastModifiedTime(file.toPath(), stamp);
+            ThirstPreviewConfig.save();
+            assertArrayEquals(before, Files.readAllBytes(file.toPath()));
+            assertEquals("An unchanged save must not perform a disk write", stamp,
+                    Files.getLastModifiedTime(file.toPath()));
+        } finally {
+            ThirstPreviewConfig.showTooltip = tooltip;
+            ThirstPreviewConfig.showHud = hud;
+            ThirstPreviewConfig.showDetailsWithShift = shift;
+            remembered.set(null, oldFile);
+            home.set(null, oldHome);
+        }
+    }
 }

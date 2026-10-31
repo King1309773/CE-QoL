@@ -22,6 +22,22 @@ public class GraveStoneBarPreviewTest {
     private static final String TARGET = "com.zzt.grave_stone.client.hud.PotionBarsRenderer";
     @Rule public final TemporaryFolder temporary = new TemporaryFolder();
 
+    @Test public void onlyAnEligibleCapturedFrameRequestsHeldValues() throws Exception {
+        Object preview = preview(() -> settings(true, true, true, true, false));
+        assertEquals(false, invoke(preview, "hasCapturedFrame", new Class<?>[0]));
+        invoke(preview, "capture", new Class<?>[] {
+                int.class, int.class, boolean.class, boolean.class}, 320, 240, true, false);
+        assertEquals(true, invoke(preview, "hasCapturedFrame", new Class<?>[0]));
+        invoke(preview, "beginFrame", new Class<?>[0]);
+        assertEquals(false, invoke(preview, "hasCapturedFrame", new Class<?>[0]));
+        invoke(preview, "capture", new Class<?>[] {
+                int.class, int.class, boolean.class, boolean.class}, 320, 240, true, true);
+        assertEquals(false, invoke(preview, "hasCapturedFrame", new Class<?>[0]));
+        invoke(preview, "capture", new Class<?>[] {
+                int.class, int.class, boolean.class, boolean.class}, 320, 240, false, false);
+        assertEquals(false, invoke(preview, "hasCapturedFrame", new Class<?>[0]));
+    }
+
     @Test
     public void missingOptionalModLoadsAndNoOpsWithoutMinecraft() throws Exception {
         Object preview = target(TYPE).getDeclaredConstructor().newInstance();

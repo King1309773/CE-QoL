@@ -40,6 +40,8 @@ public final class ClientEvents {
     private final GraveStoneBarPreview barPreview = new GraveStoneBarPreview();
     // LWJGL 2 requires room for sixteen floats even for GL_CURRENT_COLOR.
     private final FloatBuffer savedColor = BufferUtils.createFloatBuffer(16);
+    private final DecimalFormat numberFormat =
+            new DecimalFormat("0.###", DecimalFormatSymbols.getInstance(Locale.ROOT));
     private int updateCounter;
     private int capturedThirstY;
     private boolean capturedNativeRow;
@@ -109,7 +111,7 @@ public final class ClientEvents {
     public void onOverlayPost(RenderGameOverlayEvent.Post event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft minecraft = Minecraft.getMinecraft();
-            if (commonVisible(minecraft)) {
+            if (barPreview.hasCapturedFrame() && commonVisible(minecraft)) {
                 ThirstValues values = heldValues(minecraft);
                 IThirstCapability thirst = SDCapabilities.getThirstData(minecraft.player);
                 if (values != null && thirst != null) {
@@ -215,7 +217,7 @@ public final class ClientEvents {
         }
     }
 
-    private static String format(float value) {
-        return new DecimalFormat("0.###", DecimalFormatSymbols.getInstance(Locale.ROOT)).format(value);
+    private String format(float value) {
+        return numberFormat.format(value);
     }
 }

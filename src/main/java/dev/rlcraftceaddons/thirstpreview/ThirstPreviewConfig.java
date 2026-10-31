@@ -44,6 +44,7 @@ public final class ThirstPreviewConfig {
 
     private static void setBoolean(Configuration config, String key, boolean value, String comment) {
         Property property = config.get("client", key, true, comment + " [default: true]");
-        property.set(value);
+        // Forge marks a property changed even when set to its current value.
+        if (property.getBoolean() != value) property.set(value);
     }
 }
