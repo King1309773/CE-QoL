@@ -15,6 +15,10 @@ Minecraft names; the original key identity and resource namespace are preserved.
 The unified entry point replaces the standalone AutoFish mod entry point.
 These changes are local adaptations, not an official NorthWestWind release.
 
+CE QoL 1.2.0 local additions (2026-10-31): remaining-durability protection
+before automated actions, read-only fishing status, client preferences and
+status/configuration UI. These additions are local work, not upstream features.
+
 The historical source reference and the installed base JAR did not include a
 LICENSE file. The current upstream project publishes GNU GPL version 3 text;
 the adjacent LICENSE is an exact copy of that upstream text, verified as Git
@@ -30,3 +34,4 @@ AutoFish integration sources are included in the CE QoL source archive under:
 src/main/java/com/northwestwind/forgeautofish/handler/AutoFishHandler.java
 src/main/java/com/northwestwind/forgeautofish/keybind/KeyBinds.java
 src/main/java/com/northwestwind/forgeautofish/AutoFishModule.java
+src/main/java/com/northwestwind/forgeautofish/AutoFishSettings.java

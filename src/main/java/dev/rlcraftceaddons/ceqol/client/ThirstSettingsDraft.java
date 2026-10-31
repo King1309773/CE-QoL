@@ -15,12 +15,9 @@ public final class ThirstSettingsDraft {
     public void toggleHud() { hud = !hud; }
     public void toggleDetails() { details = !details; }
 
-    public void apply() {
+    public void apply() throws java.io.IOException {
         if (tooltip == ThirstPreviewConfig.showTooltip && hud == ThirstPreviewConfig.showHud
                 && details == ThirstPreviewConfig.showDetailsWithShift) return;
-        ThirstPreviewConfig.showTooltip = tooltip;
-        ThirstPreviewConfig.showHud = hud;
-        ThirstPreviewConfig.showDetailsWithShift = details;
-        ThirstPreviewConfig.save();
+        ThirstPreviewConfig.apply(tooltip,hud,details);
     }
 }

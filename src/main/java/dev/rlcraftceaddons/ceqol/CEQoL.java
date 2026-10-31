@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /** One Forge identity; the feature packages retain their existing resources and settings. */
-@Mod(modid = CEQoL.MODID, name = "CE QoL", version = "1.1.1",
+@Mod(modid = CEQoL.MODID, name = "CE QoL", version = "1.2.0",
         acceptedMinecraftVersions = "[1.12.2]", clientSideOnly = true,
         acceptableRemoteVersions = "*",
         dependencies = "required-after:simpledifficulty@[0.3.9,0.4);required-after:qualitytools@[1.0.7_for_1.12.2];after:appleskin;after:controlling",
@@ -21,7 +21,11 @@ public final class CEQoL {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        if (event.getSide().isClient()) new ThirstPreview().preInit(event);
+        if (event.getSide().isClient()) {
+            new ThirstPreview().preInit(event);
+            try {dev.rlcraftceaddons.ceqol.config.AutoFishConfig.load(new java.io.File(event.getModConfigurationDirectory(),"ceqol.cfg"));}
+            catch(java.io.IOException | RuntimeException failure) {event.getModLog().error("Fishing preferences could not be saved; using current defaults",failure);}
+        }
     }
 
     @Mod.EventHandler

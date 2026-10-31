@@ -18,6 +18,17 @@ import static dev.rlcraftceaddons.visualcontrols.binding.BindingIndex.State.*;
 import static org.junit.Assert.*;
 
 public class BindingIndexTest {
+    @Test public void repeatedSearchesReuseTranslatedNames() {
+        AtomicInteger translations = new AtomicInteger();
+        KeyBinding binding = key(R, KeyConflictContext.IN_GAME, KeyModifier.NONE);
+        BindingIndex index = new BindingIndex(new KeyBinding[]{binding}, text -> {
+            translations.incrementAndGet(); return text;
+        });
+        index.find("missing", ALL, null);
+        int afterFirst = translations.get();
+        for (int i=0;i<10;i++) index.find("missing", ALL, null);
+        assertEquals("Typing must reuse the translated search index", afterFirst, translations.get());
+    }
     private static final AtomicInteger IDS = new AtomicInteger();
     private static final int R = 19;
     private static final int CTRL = 29;

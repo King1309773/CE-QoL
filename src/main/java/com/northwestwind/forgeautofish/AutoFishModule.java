@@ -15,7 +15,9 @@ public final class AutoFishModule {
     public static synchronized void initialize() {
         if (initialized) return;
         KeyBinds.register();
-        MinecraftForge.EVENT_BUS.register(new AutoFishHandler());
+        AutoFishHandler handler=new AutoFishHandler();
+        MinecraftForge.EVENT_BUS.register(handler);
+        MinecraftForge.EVENT_BUS.register(new dev.rlcraftceaddons.ceqol.client.FishingStatusHud(handler));
         initialized = true;
     }
 }

@@ -1,6 +1,7 @@
 package com.northwestwind.forgeautofish.handler;
 
 import com.northwestwind.forgeautofish.keybind.KeyBinds;
+import com.northwestwind.forgeautofish.AutoFishSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -29,6 +30,7 @@ public class AutoFishHandler {
     private static final double BITE_SOUND_RADIUS_SQUARED = 1.0;
 
     private boolean autofishenabled;
+    private boolean stoppedForDurability;
     private EntityPlayerSP sessionPlayer;
     private WorldClient sessionWorld;
     private NetHandlerPlayClient sessionConnection;
@@ -44,6 +46,7 @@ public class AutoFishHandler {
         if (!bindSession(mc) || KeyBinds.autofish == null) return;
         if (KeyBinds.autofish.isPressed()) {
             autofishenabled = !autofishenabled;
+            stoppedForDurability=false;
             clearCycle();
             sessionPlayer.sendStatusMessage(new TextComponentTranslation(
                 "toggle.forgeautofish", autofishenabled ? "\u00a7aEnabled" : "\u00a7cDisabled"), true);
@@ -87,6 +90,14 @@ public class AutoFishHandler {
         if (event.player != mc.player || !bindSession(mc)) return;
         if (!autofishenabled || !holdingRod()) {
             clearCycle();
+            return;
+        }
+
+        ItemStack rod=sessionPlayer.getHeldItemMainhand();
+        if(AutoFishSettings.protectRod && rod.isItemStackDamageable()
+                && (long)rod.getMaxDamage()-rod.getItemDamage()<=Math.max(1,Math.min(100,AutoFishSettings.durabilityReserve))) {
+            autofishenabled=false;stoppedForDurability=true;clearCycle();
+            sessionPlayer.sendStatusMessage(new TextComponentTranslation("ceqol.fishing.low_notice"),true);
             return;
         }
 
@@ -168,8 +179,20 @@ public class AutoFishHandler {
 
     private void clearSession() {
         clearCycle();
+        stoppedForDurability=false;
         sessionPlayer = null;
         sessionWorld = null;
         sessionConnection = null;
+    }
+
+    public synchronized String statusKey() {
+        if(stoppedForDurability)return "low_durability";
+        if(!autofishenabled)return "off";
+        if(sessionPlayer==null)return "no_session";
+        if(!holdingRod())return "no_rod";
+        if(stage==WAITING_FOR_REMOVAL)return "recasting";
+        if(stage==WAITING_FOR_NEW_HOOK)return "waiting_hook";
+        if(validHook(sessionPlayer.fishEntity) && sessionPlayer.fishEntity==processedHook)return "manual_reset";
+        return validHook(sessionPlayer.fishEntity)?"waiting_bite":"manual_cast";
     }
 }

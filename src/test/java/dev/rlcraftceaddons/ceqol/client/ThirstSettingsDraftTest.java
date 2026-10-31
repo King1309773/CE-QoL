@@ -56,6 +56,20 @@ public class ThirstSettingsDraftTest {
         assertTrue(ThirstPreviewConfig.showDetailsWithShift);
     }
 
+    @Test public void failedSaveKeepsLiveValuesAndDraftForRetry() throws Exception {
+        java.nio.file.Path folder=java.nio.file.Files.createTempDirectory("thirst-save-failure");
+        java.nio.file.Path blocker=folder.resolve("not-a-directory");java.nio.file.Files.createFile(blocker);
+        try {
+            Object draft=create();call(draft,"toggleHud");
+            configFile.set(null,blocker.resolve("thirstpreview.cfg").toFile());
+            try {call(draft,"apply");fail("Save should fail");}
+            catch(java.lang.reflect.InvocationTargetException expected){assertTrue(expected.getCause() instanceof java.io.IOException);}
+            assertTrue(ThirstPreviewConfig.showHud);
+            assertEquals(false,call(draft,"showHud"));
+            configFile.set(null,null);call(draft,"apply");assertFalse(ThirstPreviewConfig.showHud);
+        }finally {java.nio.file.Files.deleteIfExists(blocker);java.nio.file.Files.deleteIfExists(folder);}
+    }
+
     private Object create() throws Exception {
         try { return Class.forName("dev.rlcraftceaddons.ceqol.client.ThirstSettingsDraft")
                 .getConstructor().newInstance(); }

@@ -175,8 +175,55 @@ public final class StableFishingSuite {
             for(Thread t:Thread.getAllStackTraces().keySet())
                 require(before.contains(t),"automation spawned worker thread "+t.getName());
         }});
+        test("low_durability_stops_before_reel",()->{
+            Fixture f=new Fixture();f.player.held.maxDamage=100;f.player.held.damage=90;
+            f.sound(BITE);f.tick();f.expect(0);require(!f.isEnabled(),"low durability did not disable fishing");
+            require("low_durability".equals(status(f.handler)),"missing low durability status");
+            f.tick(100);require(f.player.notices==1,"low durability notice repeated");
+        });
+        test("damage_during_recast_delay_cancels_recast",()->{
+            Fixture f=new Fixture();f.reel();f.player.field_71104_cf=null;
+            f.player.held.maxDamage=100;f.player.held.damage=95;f.tick(30);f.expect(1);
+            require(!f.isEnabled(),"pending recast survived low durability");
+        });
+        test("reserve_boundary_allows_eleven_remaining",()->{
+            Fixture f=new Fixture();f.player.held.maxDamage=100;f.player.held.damage=89;f.reel();
+        });
+        test("unbreakable_rod_is_not_stopped",()->{
+            Fixture f=new Fixture();f.player.held.maxDamage=100;f.player.held.damage=99;f.player.held.unbreakable=true;f.reel();
+        });
+        test("status_tracks_bite_recast_and_manual_first_cast",()->{
+            Fixture f=new Fixture();f.tick();require("waiting_bite".equals(status(f.handler)),"bite status");
+            f.reel();require("recasting".equals(status(f.handler)),"recast status");
+            f.player.field_71104_cf=null;f.tick(10);require("waiting_hook".equals(status(f.handler)),"new hook status");
+        });
+        test("disabled_guard_allows_low_durability",()->{
+            Fixture f=new Fixture();option("protectRod",false);
+            f.player.held.maxDamage=100;f.player.held.damage=99;f.reel();
+        });
+        test("custom_reserve_is_inclusive",()->{
+            Fixture f=new Fixture();option("durabilityReserve",20);
+            f.player.held.maxDamage=100;f.player.held.damage=80;f.sound(BITE);f.tick();f.expect(0);
+            require(!f.isEnabled(),"custom reserve ignored");
+        });
+        test("undamageable_rod_bypasses_guard",()->{
+            Fixture f=new Fixture();f.player.held.maxDamage=0;f.reel();
+        });
+        test("no_bobber_status_requires_manual_first_cast",()->{
+            Fixture f=new Fixture();f.player.field_71104_cf=null;f.tick(30);f.expect(0);
+            require("manual_cast".equals(status(f.handler)),"manual first cast status missing");
+        });
+        test("old_hook_timeout_status_requests_manual_handling",()->{
+            Fixture f=new Fixture();f.reel();f.tick(65);f.expect(1);
+            require("manual_reset".equals(status(f.handler)),"timeout must not advertise waiting for a new bite");
+        });
         System.out.println("RESULT passed="+passed+" failed="+failed+" total="+(passed+failed));
         if(failed!=0)System.exit(1);
+    }
+
+    private static String status(AutoFishHandler handler)throws Exception {
+        try{return (String)AutoFishHandler.class.getMethod("statusKey").invoke(handler);}
+        catch(NoSuchMethodException e){throw new AssertionError("Fishing status is missing",e);}
     }
 
     private static final class Fixture {
@@ -185,6 +232,7 @@ public final class StableFishingSuite {
         final NetHandlerPlayClient connection=new NetHandlerPlayClient();
         final AutoFishHandler handler=new AutoFishHandler();
         Fixture()throws Exception{
+            try {option("protectRod",true);option("durabilityReserve",10);}catch(ClassNotFoundException oldBaseline){}
             mc.field_71439_g=player;mc.field_71441_e=new WorldClient();mc.connection=connection;
             player.field_70170_p=mc.field_71441_e;player.held=new ItemStack(new ItemFishingRod());
             newHook();enabled(true);
@@ -229,6 +277,9 @@ public final class StableFishingSuite {
                 require(((CPacketPlayerTryUseItem)p).hand==EnumHand.MAIN_HAND,"wrong hand");
             }
         }
+    }
+    private static void option(String name,Object value)throws Exception {
+        Class.forName("com.northwestwind.forgeautofish.AutoFishSettings").getField(name).set(null,value);
     }
     private static final class Cue implements ISound {
         private final ResourceLocation id;private final float x,y,z;

@@ -1,6 +1,8 @@
 package dev.rlcraftceaddons.thirstpreview;
 
 import java.io.File;
+import java.io.IOException;
+import dev.rlcraftceaddons.ceqol.config.ConfigFileStore;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -31,15 +33,19 @@ public final class ThirstPreviewConfig {
     }
 
     public static void save() {
-        if (configFile == null) return;
-        Configuration config = new Configuration(configFile);
-        config.load();
-        setBoolean(config, "showTooltip", showTooltip, TOOLTIP_COMMENT);
-        setBoolean(config, "showHud", showHud, HUD_COMMENT);
-        setBoolean(config, "showDetailsWithShift", showDetailsWithShift, SHIFT_COMMENT);
-        if (config.hasChanged()) {
-            config.save();
-        }
+        try { apply(showTooltip,showHud,showDetailsWithShift); }
+        catch(IOException failure) {throw new IllegalStateException("Hydration settings were not saved",failure);}
+    }
+
+    public static void apply(boolean tooltip,boolean hud,boolean details)throws IOException {
+        if(configFile!=null)ConfigFileStore.write(configFile,config->{
+            setBoolean(config,"showTooltip",tooltip,TOOLTIP_COMMENT);
+            setBoolean(config,"showHud",hud,HUD_COMMENT);
+            setBoolean(config,"showDetailsWithShift",details,SHIFT_COMMENT);
+        },config->config.getBoolean("showTooltip","client",true,TOOLTIP_COMMENT)==tooltip
+                && config.getBoolean("showHud","client",true,HUD_COMMENT)==hud
+                && config.getBoolean("showDetailsWithShift","client",true,SHIFT_COMMENT)==details);
+        showTooltip=tooltip;showHud=hud;showDetailsWithShift=details;
     }
 
     private static void setBoolean(Configuration config, String key, boolean value, String comment) {

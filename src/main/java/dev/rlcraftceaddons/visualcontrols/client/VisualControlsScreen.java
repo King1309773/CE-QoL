@@ -92,7 +92,6 @@ public final class VisualControlsScreen extends GuiScreen {
     }
 
     private void refresh() {
-        index.refresh();
         visible = index.find(searchText, filter, selectedKey);
         scroll = Math.max(0, Math.min(scroll, Math.max(0, visible.size() - pageSize())));
         for (GuiButton button : buttonList) {
@@ -313,9 +312,9 @@ public final class VisualControlsScreen extends GuiScreen {
                 if (inside(mouseX, mouseY, layout.bindingX, rowY(i) + 2, layout.bindingWidth, 20)) {
                     editing = binding; capture.begin(); search.setFocused(false); refresh();
                 } else if (inside(mouseX, mouseY, layout.clearX, rowY(i) + 2, layout.clearWidth, 20)) {
-                    editor.clear(binding); refresh();
+                    editor.clear(binding); index.refresh(); refresh();
                 } else if (inside(mouseX, mouseY, layout.resetX, rowY(i) + 2, layout.resetWidth, 20)) {
-                    editor.reset(binding); refresh();
+                    editor.reset(binding); index.refresh(); refresh();
                 }
                 return;
             }
@@ -385,7 +384,7 @@ public final class VisualControlsScreen extends GuiScreen {
     private void apply(CaptureSession.Result result) {
         if (result.kind == CaptureSession.Kind.APPLY && editing != null) {
             editor.bind(editing, result.keyCode, result.modifier);
-            editing = null; refresh();
+            editing = null; index.refresh(); refresh();
         } else if (result.kind == CaptureSession.Kind.CANCEL) cancelCapture();
     }
 

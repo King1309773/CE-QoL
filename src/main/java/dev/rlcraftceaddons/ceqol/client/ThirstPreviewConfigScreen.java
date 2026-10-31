@@ -15,6 +15,7 @@ public final class ThirstPreviewConfigScreen extends GuiScreen {
     private final GuiScreen parent;
     private final ThirstSettingsDraft draft = new ThirstSettingsDraft();
     private boolean compact;
+    private boolean saveFailed;
 
     public ThirstPreviewConfigScreen(GuiScreen parent) { this.parent = parent; }
 
@@ -54,7 +55,8 @@ public final class ThirstPreviewConfigScreen extends GuiScreen {
     @Override protected void actionPerformed(GuiButton button) {
         if (!button.enabled) return;
         if (button.id == DONE) {
-            draft.apply();
+            try {draft.apply();}
+            catch(IOException failure) {saveFailed=true;return;}
             mc.displayGuiScreen(parent);
             return;
         }
@@ -75,8 +77,8 @@ public final class ThirstPreviewConfigScreen extends GuiScreen {
         drawDefaultBackground();
         if (width >= 80 && height >= 30) {
             drawCenteredString(fontRenderer, fontRenderer.trimStringToWidth(
-                    I18n.format("ceqol.config.thirst"), Math.max(1, width - 16)),
-                    width / 2, 10, 0xFFFFFF);
+                    I18n.format(saveFailed?"ceqol.config.save_failed":"ceqol.config.thirst"), Math.max(1, width - 16)),
+                    width / 2, 10, saveFailed?0xFF7777:0xFFFFFF);
         }
         if (compact && height >= 70) {
             drawCenteredString(fontRenderer, fontRenderer.trimStringToWidth(

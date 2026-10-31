@@ -22,6 +22,7 @@ public final class BindingIndex {
     private List<KeyBinding> all = Collections.emptyList();
     private final Map<Integer, List<KeyBinding>> byKey = new HashMap<>();
     private final Set<KeyBinding> conflicts = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Map<KeyBinding,String> names=new IdentityHashMap<>(),categories=new IdentityHashMap<>(),search=new IdentityHashMap<>();
 
     public BindingIndex(KeyBinding[] bindings, Function<String, String> translate) {
         this.runtimeBindings = Objects.requireNonNull(bindings, "bindings");
@@ -46,8 +47,7 @@ public final class BindingIndex {
             if (filter == Filter.UNBOUND && binding.getKeyCode() != 0) {
                 continue;
             }
-            if (needle.isEmpty() || contains(name(binding), needle) || contains(category(binding), needle)
-                    || contains(binding.getKeyDescription(), needle) || contains(binding.getKeyCategory(), needle)) {
+            if (needle.isEmpty() || search.get(binding).contains(needle)) {
                 result.add(binding);
             }
         }
@@ -77,11 +77,11 @@ public final class BindingIndex {
     }
 
     public String name(KeyBinding binding) {
-        return translated(binding.getKeyDescription());
+        return names.get(binding);
     }
 
     public String category(KeyBinding binding) {
-        return translated(binding.getKeyCategory());
+        return categories.get(binding);
     }
 
     /** Recompute before displaying controls after an edit or a registry change. */
@@ -90,9 +90,13 @@ public final class BindingIndex {
         Set<KeyBinding> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         byKey.clear();
         conflicts.clear();
+        names.clear();categories.clear();search.clear();
         for (KeyBinding binding : runtimeBindings) {
             if (binding != null && seen.add(binding)) {
                 current.add(binding);
+                String name=translated(binding.getKeyDescription()),category=translated(binding.getKeyCategory());
+                names.put(binding,name);categories.put(binding,category);
+                search.put(binding,(name+'\n'+category+'\n'+binding.getKeyDescription()+'\n'+binding.getKeyCategory()).toLowerCase(Locale.ROOT));
                 if (binding.getKeyCode() != 0) {
                     byKey.computeIfAbsent(binding.getKeyCode(), ignored -> new ArrayList<>()).add(binding);
                 }

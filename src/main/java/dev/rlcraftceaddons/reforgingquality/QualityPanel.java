@@ -3,6 +3,7 @@ package dev.rlcraftceaddons.reforgingquality;
 import com.tmtravlr.qualitytools.reforging.GuiReforgingStation;
 import com.tmtravlr.qualitytools.reforging.TileEntityReforgingStation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -13,8 +14,11 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public final class QualityPanel {
+public final class QualityPanel implements net.minecraft.client.resources.IResourceManagerReloadListener {
+    private final SlotSnapshotCache<NameLayout> textCache=new SlotSnapshotCache<>();
+    @Override public void onResourceManagerReload(net.minecraft.client.resources.IResourceManager manager) {textCache.clear();}
     @SubscribeEvent public void open(GuiOpenEvent event) {
+        textCache.clear();
         if(event.getGui()!=null && event.getGui().getClass()==GuiReforgingStation.class) {
             GuiReforgingStation original=(GuiReforgingStation)event.getGui();
             if(original.inventorySlots.getSlot(0).inventory instanceof TileEntityReforgingStation) {
@@ -42,8 +46,11 @@ public final class QualityPanel {
         GuiContainer gui = event.getGuiContainer();
         if (!(gui instanceof QualityStationScreen)) return;
         PanelLayout p = layout(gui);
-        QualityInfo info = read(gui);
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        Minecraft mc=Minecraft.getMinecraft();
+        NameLayout name=textCache.get(gui.inventorySlots.getSlot(0).getStack(),
+                Arrays.asList(mc.player,mc.world,mc.gameSettings.language,font,p.width,p.textHeight(),font.FONT_HEIGHT),
+                ()->effectLayout(font,read(gui),p));
         GlStateManager.pushMatrix();
         GlStateManager.translate(-gui.getGuiLeft(), -gui.getGuiTop(), 0);
         GlStateManager.disableLighting();
@@ -51,7 +58,6 @@ public final class QualityPanel {
         try {
             Gui.drawRect(p.x, p.y, p.x+p.width, p.y+p.height-p.footerHeight, 0xF0181620);
             Gui.drawRect(p.x, p.y, p.x+p.width, p.y+1, 0xFF9A7EBC);
-            NameLayout name=effectLayout(font, info, p);
             GlStateManager.pushMatrix();
             try {
                 GlStateManager.translate(p.x+5, p.y+5, 0);
