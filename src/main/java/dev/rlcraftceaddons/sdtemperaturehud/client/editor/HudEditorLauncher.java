@@ -49,7 +49,7 @@ public final class HudEditorLauncher {
         if (decision != Decision.OPEN) {
             return false;
         }
-        this.minecraft.displayGuiScreen(new GuiHudEditor(this.snapshotProvider, this.renderer));
+        this.minecraft.displayGuiScreen(new dev.rlcraftceaddons.ceqol.client.UnifiedHudEditor(null));
         return true;
     }
 

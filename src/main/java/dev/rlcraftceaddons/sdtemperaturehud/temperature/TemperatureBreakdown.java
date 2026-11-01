@@ -65,5 +65,15 @@ public final class TemperatureBreakdown {
     public int sum() {
         return this.environment + this.equipment + this.season + this.heatSource + this.other;
     }
+
+    @Override public boolean equals(Object other) {
+        if(this==other)return true;
+        if(!(other instanceof TemperatureBreakdown))return false;
+        TemperatureBreakdown that=(TemperatureBreakdown)other;
+        return environment==that.environment && equipment==that.equipment && season==that.season
+                && heatSource==that.heatSource && otherForHints==that.otherForHints && this.other==that.other
+                && target==that.target && movementForHints==that.movementForHints;
+    }
+    @Override public int hashCode() {return java.util.Objects.hash(environment,equipment,season,heatSource,other,target,movementForHints,otherForHints);}
 }
 

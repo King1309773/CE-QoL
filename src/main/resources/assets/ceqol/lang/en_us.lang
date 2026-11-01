@@ -1,4 +1,9 @@
 ceqol.config.temperature=Temperature HUD
+ceqol.hud.title=Unified HUD layout editor
+ceqol.hud.hint=Drag panels; wheel scales temperature; R resets; Shift disables snapping
+ceqol.hud.example=Layout preview uses samples without live data. Save applies; Esc cancels.
+ceqol.hud.reset=Reset selected
+ceqol.hud.empty_analysis=Temperature analysis
 ceqol.config.controls=Visual controls
 ceqol.config.thirst=Hydration preview
 ceqol.config.autofish=AutoFish key binding

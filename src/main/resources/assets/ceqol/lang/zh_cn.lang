@@ -1,4 +1,9 @@
 ceqol.config.temperature=温度 HUD
+ceqol.hud.title=统一 HUD 布局编辑
+ceqol.hud.hint=拖动面板；温度滚轮缩放；R 重置；Shift 取消吸附
+ceqol.hud.example=布局预览；无实时数据时使用示例。保存生效，Esc 取消。
+ceqol.hud.reset=重置选中面板
+ceqol.hud.empty_analysis=温度分析面板
 ceqol.config.controls=可视化按键
 ceqol.config.thirst=补水预览
 ceqol.config.autofish=自动钓鱼快捷键

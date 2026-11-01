@@ -225,6 +225,6 @@ public final class ClientEventHandler {
         boolean hasPlayerController = this.minecraft.playerController != null;
         boolean survivalOrAdventure = hasPlayerController && this.minecraft.playerController.gameIsSurvivalOrAdventure();
         boolean alternateTemperatureEnabled = ClientConfig.instance != null && ClientConfig.instance.getBoolean((IConfigOption)ClientOptions.ALTERNATE_TEMP);
-        return HudVisibility.shouldRender(hasPlayer, hasWorld, hasPlayerController, this.minecraft.gameSettings.hideGUI, survivalOrAdventure, QuickConfig.isTemperatureEnabled(), alternateTemperatureEnabled, this.minecraft.currentScreen instanceof GuiGameOver, this.minecraft.currentScreen instanceof GuiHudEditor || this.minecraft.currentScreen instanceof GuiHudConfig || this.minecraft.currentScreen instanceof GuiResetSettings || this.minecraft.currentScreen instanceof GuiMapIntegration);
+        return HudVisibility.shouldRender(hasPlayer, hasWorld, hasPlayerController, this.minecraft.gameSettings.hideGUI, survivalOrAdventure, QuickConfig.isTemperatureEnabled(), alternateTemperatureEnabled, this.minecraft.currentScreen instanceof GuiGameOver, this.minecraft.currentScreen instanceof GuiHudEditor || this.minecraft.currentScreen instanceof dev.rlcraftceaddons.ceqol.client.UnifiedHudEditor || this.minecraft.currentScreen instanceof GuiHudConfig || this.minecraft.currentScreen instanceof GuiResetSettings || this.minecraft.currentScreen instanceof GuiMapIntegration);
     }
 }

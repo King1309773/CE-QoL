@@ -29,6 +29,10 @@ public final class TemperatureHudRenderer {
     private static final int PANEL_HEIGHT = 10;
     private final Minecraft minecraft;
     private final TextWidthProvider textWidthProvider;
+    private final dev.rlcraftceaddons.ceqol.client.PresentationCache<CompactPanel> compactCache = new dev.rlcraftceaddons.ceqol.client.PresentationCache<>();
+    private final dev.rlcraftceaddons.ceqol.client.PresentationCache<AnalysisPanel> analysisCache = new dev.rlcraftceaddons.ceqol.client.PresentationCache<>();
+
+    public void invalidatePresentations() {compactCache.clear();analysisCache.clear();}
 
     public TemperatureHudRenderer(Minecraft minecraft) {
         this(minecraft, new TextWidthProvider() {
@@ -81,6 +85,11 @@ public final class TemperatureHudRenderer {
     }
 
     public CompactPanel measureCompact(TemperatureSnapshot snapshot, HudSettings settings) {
+        return compactCache.get(snapshot,settings,dev.rlcraftceaddons.ceqol.client.HudRenderContext.current(minecraft),
+                ()->createCompact(snapshot,settings));
+    }
+
+    private CompactPanel createCompact(TemperatureSnapshot snapshot, HudSettings settings) {
         HudColorPalette palette = settings.getColorPalette();
         String bodyText = TemperaturePresentation.from(snapshot).getBodyText();
         String trendText = "";
@@ -135,6 +144,11 @@ public final class TemperatureHudRenderer {
     }
 
     public AnalysisPanel measureAnalysis(TemperatureBreakdown breakdown, HudSettings settings) {
+        return analysisCache.get(breakdown,settings,dev.rlcraftceaddons.ceqol.client.HudRenderContext.current(minecraft),
+                ()->createAnalysis(breakdown,settings));
+    }
+
+    private AnalysisPanel createAnalysis(TemperatureBreakdown breakdown, HudSettings settings) {
         List<AnalysisRow> rows = this.createAnalysisRows(breakdown, settings);
         if (rows.isEmpty()) {
             return null;
@@ -146,17 +160,18 @@ public final class TemperatureHudRenderer {
         int contentWidth = title == null ? 0 : this.textWidthProvider.width(title);
         boolean hasTarget = false;
         for (AnalysisRow row : rows) {
+            row.valueWidth = this.textWidthProvider.width(row.value);
             contentWidth = Math.max(
                 contentWidth,
                 this.textWidthProvider.width(row.label)
                     + TemperatureAnalysisLayout.VALUE_GAP
-                    + this.textWidthProvider.width(row.value)
+                    + row.valueWidth
             );
             hasTarget |= row.target;
         }
         int panelWidth = TemperatureAnalysisLayout.panelWidth(contentWidth);
         int panelHeight = TemperatureAnalysisLayout.panelHeight(lineCount, hasTarget);
-        return new AnalysisPanel(title, rows, panelWidth, panelHeight);
+        return new AnalysisPanel(title, rows, panelWidth, panelHeight, title == null ? 0 : this.textWidthProvider.width(title));
     }
 
     public void renderCompact(
@@ -238,7 +253,7 @@ public final class TemperatureHudRenderer {
             HudColorPalette palette = settings.getColorPalette();
             int lineIndex = 0;
             if (panel.title != null) {
-                int titleX = (panel.width - font.getStringWidth(panel.title)) / 2;
+                int titleX = (panel.width - panel.titleWidth) / 2;
                 font.drawStringWithShadow(
                     panel.title,
                     titleX,
@@ -267,7 +282,7 @@ public final class TemperatureHudRenderer {
                 );
                 font.drawStringWithShadow(
                     row.value,
-                    TemperatureAnalysisLayout.valueX(panel.width, font.getStringWidth(row.value)),
+                    TemperatureAnalysisLayout.valueX(panel.width, row.valueWidth),
                     y,
                     style.textColor(row.color)
                 );
@@ -619,12 +634,18 @@ public final class TemperatureHudRenderer {
         private final List<AnalysisRow> rows;
         private final int width;
         private final int height;
+        private final int titleWidth;
 
         private AnalysisPanel(String title, List<AnalysisRow> rows, int width, int height) {
+            this(title,rows,width,height,0);
+        }
+
+        private AnalysisPanel(String title, List<AnalysisRow> rows, int width, int height, int titleWidth) {
             this.title = title;
             this.rows = Collections.unmodifiableList(new ArrayList<AnalysisRow>(rows));
             this.width = width;
             this.height = height;
+            this.titleWidth = titleWidth;
         }
 
         public int getWidth() {
@@ -641,6 +662,7 @@ public final class TemperatureHudRenderer {
         private final String value;
         private final int color;
         private final boolean target;
+        private int valueWidth;
 
         private AnalysisRow(String labelKey, String value, int color, boolean target) {
             this.label = I18n.format(labelKey);

@@ -39,6 +39,7 @@ public final class SDTemperatureHud {
         }
         HudSettings.refreshFromConfig();
         Minecraft minecraft = Minecraft.getMinecraft();
+        dev.rlcraftceaddons.ceqol.client.HudRenderContext.install(minecraft);
         TemperatureSnapshotProvider snapshotProvider = new TemperatureSnapshotProvider(new SimpleDifficultyTemperatureSource(minecraft));
         installSnapshotProvider(snapshotProvider);
         TemperatureHudRenderer renderer = new TemperatureHudRenderer(minecraft);

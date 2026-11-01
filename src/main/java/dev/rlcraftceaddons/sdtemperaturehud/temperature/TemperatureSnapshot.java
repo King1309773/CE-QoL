@@ -77,4 +77,14 @@ public final class TemperatureSnapshot {
         }
         return this.breakdown;
     }
+
+    @Override public boolean equals(Object other) {
+        if(this==other)return true;
+        if(!(other instanceof TemperatureSnapshot))return false;
+        TemperatureSnapshot that=(TemperatureSnapshot)other;
+        return available==that.available && bodyTemperature==that.bodyTemperature
+                && java.util.Objects.equals(targetTemperature,that.targetTemperature)
+                && java.util.Objects.equals(breakdown,that.breakdown);
+    }
+    @Override public int hashCode() {return java.util.Objects.hash(available,bodyTemperature,targetTemperature,breakdown);}
 }

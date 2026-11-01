@@ -103,6 +103,11 @@ public final class HudEditorLifecycleCoordinator {
 
     public void onScreenReplacement(GuiScreen replacement) {
         GuiScreen current = this.screens.currentScreen();
+        if(current instanceof dev.rlcraftceaddons.ceqol.client.UnifiedHudEditor && replacement!=current) {
+            ((dev.rlcraftceaddons.ceqol.client.UnifiedHudEditor)current).discardForLifecycle();
+            this.pendingCancellation.cancelPending();
+            return;
+        }
         boolean replacingEditor = current instanceof GuiHudEditor && replacement != current;
         if (replacingEditor) {
             ((GuiHudEditor)current).closeForLifecycle();
@@ -118,6 +123,8 @@ public final class HudEditorLifecycleCoordinator {
 
     private void closeActiveEditor() {
         GuiScreen current = this.screens.currentScreen();
+        if(current instanceof dev.rlcraftceaddons.ceqol.client.UnifiedHudEditor)
+            ((dev.rlcraftceaddons.ceqol.client.UnifiedHudEditor)current).discardForLifecycle();
         if (current instanceof GuiHudEditor) {
             ((GuiHudEditor)current).closeForLifecycle();
         }
