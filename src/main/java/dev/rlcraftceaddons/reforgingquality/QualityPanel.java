@@ -56,14 +56,20 @@ public final class QualityPanel implements net.minecraft.client.resources.IResou
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
         try {
-            Gui.drawRect(p.x, p.y, p.x+p.width, p.y+p.height-p.footerHeight, 0xF0181620);
-            Gui.drawRect(p.x, p.y, p.x+p.width, p.y+1, 0xFF9A7EBC);
+            int right = p.x + p.width;
+            int bottom = p.y + p.height - p.footerHeight;
+            // Use the recessed bevel of a vanilla inventory slot.
+            Gui.drawRect(p.x, p.y, right, bottom, 0xFFFFFFFF);
+            Gui.drawRect(p.x, p.y, right - 1, bottom - 1, 0xFF8B8B8B);
+            Gui.drawRect(p.x + 1, p.y + 1, right - 1, bottom - 1, 0xFFC6C6C6);
             GlStateManager.pushMatrix();
             try {
                 GlStateManager.translate(p.x+5, p.y+5, 0);
                 GlStateManager.scale(name.scale, name.scale, 1F);
                 for (int i=0; i<name.lines.size(); i++) {
-                    font.drawString(name.lines.get(i), 0, i*name.lineHeight, 0xEEEEEE);
+                    String line = name.lines.get(i);
+                    // A shadow keeps bright quality colors readable on the light gray surface.
+                    font.drawString(line, 0, i * name.lineHeight, 0x404040, line.indexOf('\u00a7') >= 0);
                 }
             } finally { GlStateManager.popMatrix(); }
         } finally {
