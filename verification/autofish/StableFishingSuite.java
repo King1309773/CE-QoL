@@ -217,6 +217,19 @@ public final class StableFishingSuite {
             Fixture f=new Fixture();f.reel();f.tick(65);f.expect(1);
             require("manual_reset".equals(status(f.handler)),"timeout must not advertise waiting for a new bite");
         });
+        test("menu_tick_releases_session_without_a_player_tick",()->{
+            Fixture f=new Fixture();f.reel();
+            f.mc.field_71439_g=null;f.mc.field_71441_e=null;f.mc.connection=null;
+            AutoFishHandler.class.getMethod("onClientTick",TickEvent.ClientTickEvent.class)
+                    .invoke(f.handler,new TickEvent.ClientTickEvent(TickEvent.Phase.END));
+            for(String name:new String[]{"sessionPlayer","sessionWorld","sessionConnection","pendingBite","processedHook"}) {
+                Field field=AutoFishHandler.class.getDeclaredField(name);
+                field.setAccessible(true);
+                require(field.get(f.handler)==null,"disconnected session retained "+name);
+            }
+            require(f.isEnabled(),"disconnect changed user's toggle");
+            f.expect(1);
+        });
         System.out.println("RESULT passed="+passed+" failed="+failed+" total="+(passed+failed));
         if(failed!=0)System.exit(1);
     }

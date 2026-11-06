@@ -1,5 +1,10 @@
 # 合并来源
 
+## 1.4.4：附带 Just Enough Resources
+
+- 原作者为 way2muchnoise。使用 [CurseForge 正式版 1.12.2-0.9.2.60](https://www.curseforge.com/minecraft/mc-mods/just-enough-resources-jer/files/2728585)，对应上游 [`1ca8376`](https://github.com/way2muchnoise/JustEnoughResources/tree/1ca8376)。
+- 合并包保留上游的原始类、资源、Forge 模组身份、JEI 插件和访问转换器。JER 作为独立组件与 CE QoL 同包安装。上游许可原文随包提供，位于 `META-INF/licenses/jer/LICENSE.md`。
+
 ## 1.2.0：本地增强
 
 2026-10-31，在 1.1.1 基线上增加按键搜索索引、重铸文本缓存和验证式保存。AutoFish 处理器增加本地低耐久保护和只读状态查询，另加独立选项、状态 HUD 与设置页；默认剩余耐久阈值为 10。此版本处理器不再只是标识符映射，收抛状态机仍由原 33 项回归验证，保护和状态有新增用例。原作归属与许可保持，均非上游官方发布。

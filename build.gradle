@@ -7,7 +7,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.4.2'
+version = '1.4.6'
 group = 'dev.rlcraftceaddons'
 archivesBaseName = 'ceqol'
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
@@ -25,6 +25,10 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
     implementation fg.deobf('local:SimpleDifficulty-1.12.2:0.3.9')
     compileOnly files('libs/QualityTools-1.0.7_for_1.12.2.jar')
+    compileOnly files('libs/morerefinedstorage-2.3.2.jar')
+    compileOnly files('libs/HadEnoughItems_1.12.2-4.37.2.jar',
+                      'libs/CraftTweaker2-1.12-4.1.20.703.jar',
+                      'libs/JustEnoughResources-1.12.2-0.9.2.60.jar')
     compileOnly fg.deobf('local:xaerolib-forge-1.12.2:1.7.3')
     compileOnly fg.deobf('local:xaerominimap-forge-1.12.2:26.6.0')
     compileOnly fg.deobf('local:xaeroworldmap-forge-1.12.2:1.47.0')
@@ -38,10 +42,19 @@ test {
     if (project.hasProperty('gravestoneJar')) {
         systemProperty 'thirstpreview.gravestoneJar', file(project.property('gravestoneJar')).absolutePath
     }
+    if (project.hasProperty('gravestoneJarV32')) {
+        systemProperty 'thirstpreview.gravestoneJarV32', file(project.property('gravestoneJarV32')).absolutePath
+    }
 }
 processResources {
     inputs.property 'version', project.version
     from(sourceSets.main.resources.srcDirs) { include 'mcmod.info'; expand version: project.version }
     from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+}
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'dev.rlcraftceaddons.ceqol.compat.rs.bootstrap.QualityTransferPlugin',
+                   'FMLCorePluginContainsFMLMod': 'true'
+    }
 }
 jar.finalizedBy('reobfJar')

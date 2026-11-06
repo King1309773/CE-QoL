@@ -73,6 +73,7 @@ public class GraveStoneBarPreviewTest {
     @Test
     public void nonlocalAndDirectoryCodeSourcesAreRejected() throws Exception {
         assertNull(verifiedJar(new URL("https://example.invalid/GraveStone.jar")));
+        assertNull(verifiedJar(new URL("jar:https://example.invalid/GraveStone.jar!/Renderer.class")));
         assertNull(verifiedJar(temporary.getRoot().toURI().toURL()));
         assertNull(verifiedJar(null));
     }
@@ -85,11 +86,21 @@ public class GraveStoneBarPreviewTest {
     }
 
     @Test
-    public void onlyTheVerifiedTargetJarIsAcceptedWhenProvided() throws Exception {
+    public void verifiedTargetJarsAreAcceptedWhenProvided() throws Exception {
         String jar = System.getProperty("thirstpreview.gravestoneJar");
         Assume.assumeNotNull(jar);
         assertEquals(new File(jar).getCanonicalFile(),
                 verifiedJar(new File(jar).toURI().toURL()));
+        String v32 = System.getProperty("thirstpreview.gravestoneJarV32");
+        if (v32 != null) {
+            File expected = new File(v32).getCanonicalFile();
+            URL source = expected.toURI().toURL();
+            assertEquals(expected, verifiedJar(source));
+            assertEquals(expected, verifiedJar(new URL("jar:" + source
+                    + "!/com/zzt/grave_stone/client/hud/PotionBarsRenderer.class")));
+            assertEquals(expected, verifiedJar(new URL("jar:" + source
+                    + "!/com/zzt/grave_stone/config/ModConfig.class")));
+        }
     }
 
     @Test

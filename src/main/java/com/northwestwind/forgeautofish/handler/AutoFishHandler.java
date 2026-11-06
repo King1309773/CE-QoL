@@ -79,6 +79,18 @@ public class AutoFishHandler {
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
+    public synchronized void onClientTick(TickEvent.ClientTickEvent event) {
+        // Player ticks stop when the client returns to the menu.
+        if (event.phase != TickEvent.Phase.END || sessionWorld == null) return;
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.world != sessionWorld || mc.player != sessionPlayer
+                || sessionPlayer.isDead || mc.getConnection() != sessionConnection) {
+            clearSession();
+        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public synchronized void onPlayerTick(TickEvent.PlayerTickEvent event) {
         // A physical client also contains the single-player logical server.
         if (event.side != Side.CLIENT || event.phase != TickEvent.Phase.END) return;

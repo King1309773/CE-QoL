@@ -9,6 +9,9 @@ public class TickEvent {
     public final Side side;
     public final Phase phase;
     public TickEvent(Type type, Side side, Phase phase){this.type=type;this.side=side;this.phase=phase;}
+    public static class ClientTickEvent extends TickEvent {
+        public ClientTickEvent(Phase phase){super(Type.CLIENT,Side.CLIENT,phase);}
+    }
     public static class PlayerTickEvent extends TickEvent {
         public final EntityPlayer player;
         public PlayerTickEvent(Phase phase, EntityPlayer player){

@@ -70,3 +70,7 @@ ceqol.config.thirst.hud.hint=Preview recovery from the held drink or food on the
 ceqol.config.thirst.shift.hint=Only show saturation and dehydration risk with Shift; hydration always uses icons.
 ceqol.config.thirst.save.hint=Save these settings and return. Changes take effect when saved.
 ceqol.config.thirst.cancel.hint=Discard changes and return. Escape also cancels.
+ceqol.scripted_drops.source=Source: Modpack script
+ceqol.scripted_drops.count=Quantity: %s
+ceqol.scripted_drops.chance=Drop chance: %s%%
+ceqol.scripted_drops.roll_chance=Roll chance: %s%%

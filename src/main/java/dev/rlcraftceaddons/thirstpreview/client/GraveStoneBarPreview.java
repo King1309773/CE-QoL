@@ -17,11 +17,13 @@ import java.util.logging.Logger;
 import net.minecraft.client.gui.Gui;
 import net.minecraftforge.client.GuiIngameForge;
 
-/** Optional, read-only adapter for one verified GraveStone hydration renderer. */
+/** Optional, read-only adapter for the verified GraveStone hydration renderer. */
 public final class GraveStoneBarPreview {
     private static final Logger LOGGER = Logger.getLogger(GraveStoneBarPreview.class.getName());
-    private static final String SUPPORTED_SHA256 =
+    private static final String CEADDONS_V3_SHA256 =
             "5D0013C23B177281688D5FA191922C61F06FC60A1530FC700196F85109BBB354";
+    private static final String CEADDONS_V32_SHA256 =
+            "1F5C4150715F1CFB1A9427A89E2CFF16336A6F6962475B0414A6128520CDDA08";
     private final GraveStoneBarMath.Frame frame = new GraveStoneBarMath.Frame();
     private final ConfigAccess config;
     private Settings capturedSettings;
@@ -253,11 +255,25 @@ public final class GraveStoneBarPreview {
         for (byte value : digest.digest()) {
             fingerprint.append(digits[(value >>> 4) & 15]).append(digits[value & 15]);
         }
-        return SUPPORTED_SHA256.contentEquals(fingerprint) ? jar : null;
+        return CEADDONS_V3_SHA256.contentEquals(fingerprint) || CEADDONS_V32_SHA256.contentEquals(fingerprint)
+                ? jar : null;
     }
 
     private static File localJar(URL location) throws IOException, URISyntaxException {
-        if (location == null || !"file".equalsIgnoreCase(location.getProtocol())
+        if (location == null) {
+            return null;
+        }
+        // LaunchWrapper can report the class entry as its code source. Extract the
+        // enclosing URL without opening a connection, then apply the same local-file checks.
+        if ("jar".equalsIgnoreCase(location.getProtocol())) {
+            String path = location.getPath();
+            int separator = path.indexOf("!/");
+            if (separator < 0) {
+                return null;
+            }
+            location = new URL(path.substring(0, separator));
+        }
+        if (!"file".equalsIgnoreCase(location.getProtocol())
                 || (location.getAuthority() != null && !location.getAuthority().isEmpty())) {
             return null;
         }

@@ -70,3 +70,7 @@ ceqol.config.thirst.hud.hint=在口渴条上预览手持食物或饮料的恢复
 ceqol.config.thirst.shift.hint=仅按 Shift 时显示饱和度和脱水概率；补水量始终只显示图标。
 ceqol.config.thirst.save.hint=保存本页设置并返回；修改在保存后生效。
 ceqol.config.thirst.cancel.hint=放弃本次修改并返回；按 Esc 也会取消。
+ceqol.scripted_drops.source=来源：整合包脚本
+ceqol.scripted_drops.count=数量：%s
+ceqol.scripted_drops.chance=掉落概率：%s%%
+ceqol.scripted_drops.roll_chance=判定概率：%s%%

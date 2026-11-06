@@ -2,7 +2,7 @@
   {
     "modid": "ceqol",
     "name": "CE QoL / 便捷增强",
-    "description": "重铸台品质显示、可视化按键、温度 HUD、水滴补水预览和自动钓鱼。Five client quality-of-life features in one mod.",
+    "description": "重铸台品质显示、可视化按键、温度 HUD、水滴补水预览、自动钓鱼，以及 RS 合成终端的品质材料兼容。",
     "version": "${version}",
     "mcversion": "1.12.2",
     "guiFactory": "dev.rlcraftceaddons.ceqol.client.CEQoLGuiFactory",

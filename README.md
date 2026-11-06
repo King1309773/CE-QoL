@@ -1,6 +1,6 @@
 # CE QoL / 便捷增强
 
-Minecraft Forge 1.12.2 客户端模组，当前版本 1.4.0 将以下五项功能整合到一个模组入口和一个安装文件：
+Minecraft Forge 1.12.2 模组。CE QoL 1.4.6 在同一个安装文件中附带 JER 1.12.2-0.9.2.60，并为 HEI/JEI 补充 CraftTweaker 的怪物掉落。
 
 | 功能 | 合并来源 | 使用方式 |
 |---|---|---|
@@ -9,18 +9,26 @@ Minecraft Forge 1.12.2 客户端模组，当前版本 1.4.0 将以下五项功�
 | 温度 HUD | SD Temperature HUD 1.6.1 | 显示体温、分析、预警，配置页调整布局和外观 |
 | 补水预览 | Thirst Preview 1.1.4 | 物品提示只显示整滴/半滴，手持时预览口渴条恢复 |
 | 自动钓鱼 | AutoFish 1.0.4 本地 stablefix2 | 持竿按原快捷键启停，手动抛第一杆后自动收竿、再抛竿 |
+| RS 品质取料 | RS Quality Transfer 1.0.0 | 在 More Refined Storage 2.3.2 合成终端点击 JEI 或 HEI 的“＋” |
+| 生物掉落查询 | Just Enough Resources 1.12.2-0.9.2.60 | 在 HEI 或 JEI 悬停物品按 `R`，打开「生物资源」，再悬停掉落图标看数量和概率 |
 
 补水提示没有点数、倍率、“补水：”前缀或数字回退。保留 RS 底部信息、文字列表提示、已核验 GraveStone 横条和原生水滴条的适配。
 
 ## 安装
 
+从 [GitHub Releases](https://github.com/King1309773/CE-QoL/releases) 下载发行版附件 `ceqol-1.4.6.jar`，放入整合包的 `mods` 目录。
+
 环境为 Minecraft 1.12.2、Forge 14.23.5.2860、Java 8。保留 SimpleDifficulty 0.3.9、QualityTools 1.0.7 及它们原有的依赖。
 
-从 CE QoL 1.1.x / 1.2.0 / 1.3.0 升级：退出游戏，备份并移出旧 CE QoL，再安装 `ceqol-1.4.0.jar`。从 1.0.0 升级时还需要移出独立的 `forgeautofish` JAR。
+升级时先退出游戏，备份并移出旧 CE QoL 和独立 JER，再安装合并后的 `ceqol-1.4.6.jar`。保留 HEI 或 JEI 其中一个。若曾安装独立的 `rs-quality-transfer`，也将它移出 `mods`。从 1.0.0 升级时还需要移出独立的 `forgeautofish` JAR。
 
-首次从独立版切换：将 `reforgingquality`、`visualcontrols`、`sdtemperaturehud`、`thirstpreview`、`forgeautofish` 五个 JAR 移出 `mods` 并备份，再安装合并版。不能同时保留被合并的独立版或多个 CE QoL 版本。只需客户端安装。
+首次从独立版切换时，将 `reforgingquality`、`visualcontrols`、`sdtemperaturehud`、`thirstpreview`、`forgeautofish` 五个 JAR 移出 `mods` 并备份，再安装合并版。保留一份 CE QoL 即可。
 
-继续使用现有的 `config/sdtemperaturehud.cfg`、`config/thirstpreview.cfg`，无需重新设置温度布局、颜色和补水开关。按键绑定继续使用原版设置文件，包括 AutoFish 的原按键名称和绑定。模组列表中只显示一个 CE QoL 条目，点击配置可进入统一设置页。
+RS 兼容使用原版 More Refined Storage 2.3.2，RS 为可选模组。单人游戏由同一实例执行修复，独立服务器由服务器端执行取料，因此要在服务端安装 CE QoL 才能启用此兼容。
+
+继续使用现有的 `config/sdtemperaturehud.cfg`、`config/thirstpreview.cfg`，无需重新设置温度布局、颜色和补水开关。按键绑定继续使用原版设置文件，包括 AutoFish 的原按键名称和绑定。模组列表中 CE QoL 和 JER 各有一个配置入口，均来自同一 JAR。
+
+如果安装了 CraftTweaker，「生物资源」会另外显示已加载的固定怪物掉落规则（`addDrop` 和 `addPlayerOnlyDrop`），提示标注来源、概率、数量和玩家击杀要求。每页对应一条追加规则。重启游戏后读取更新的本地规则。Dropt、自定义掉落函数、服务器专有脚本以及脚本移除的原掉落不在此适配范围内。
 
 补水设置现在先在本页编辑，点击“保存”后统一生效；“取消”和 Esc 放弃本次修改。调整窗口尺寸不会丢失未保存的选项，悬停按钮可查看说明。配置值未变时不重写文件；保存仍保留其他配置项的值。温度设置页继续使用原来的应用、完成和取消方式。
 
@@ -83,14 +91,20 @@ Minecraft Forge 1.12.2 客户端模组，当前版本 1.4.0 将以下五项功�
 
 ## 构建
 
-使用 JDK 8。将构建引用放入 `libs/`：SimpleDifficulty 0.3.9、QualityTools 1.0.7、XaeroLib 1.7.3、Xaero Minimap 26.6.0、Xaero World Map 1.47.0，文件名与 `build.gradle` 一致。它们只用于编译引用，不会合入成品。
+使用 JDK 8。将构建引用放入 `libs/`：SimpleDifficulty 0.3.9、QualityTools 1.0.7、XaeroLib 1.7.3、Xaero Minimap 26.6.0、Xaero World Map 1.47.0、More Refined Storage 2.3.2、HEI 4.37.2、CraftTweaker 4.1.20.703、JER 0.9.2.60，文件名与 `build.gradle` 一致。JER 由下文打包脚本加入成品，其余模组由整合包提供。
 
 ```powershell
 .\gradlew.bat test build --console=plain
 ```
 
-可通过 `-PpackRules=<consumableThirst.json绝对路径>` 和 `-PgravestoneJar=<GraveStone-1.0.0.jar绝对路径>` 指定目标规则与适配指纹测试。没有可选指纹文件时，不能将跳过视为已验证对应环境。
+合并安装包使用 [JER 正式版原始 JAR](https://www.curseforge.com/minecraft/mc-mods/just-enough-resources-jer/files/2728585) 和已重混淆的 CE QoL。以下命令需要 Python 3.8 或以上。
 
-自动钓鱼的 43 项真实处理器回归单独运行 `verification/autofish/run-tests.ps1`，直接验证重混淆后的成品；边界测试桩不会进入正常 Gradle 类路径或生产 JAR。
+```powershell
+python packaging/bundle_jer.py build/libs/ceqol-1.4.6.jar libs/JustEnoughResources-1.12.2-0.9.2.60.jar dist/ceqol-1.4.6.jar
+```
+
+可通过 `-PpackRules=<consumableThirst.json绝对路径>` 指定整合包的补水规则，使用 `-PgravestoneJar` 和 `-PgravestoneJarV32` 分别指定 v涛.3、v涛.3.2 的 GraveStone JAR，核验适配指纹。
+
+自动钓鱼的 44 项处理器回归单独运行 `verification/autofish/run-tests.ps1`，直接验证重混淆后的成品。测试桩只在回归验证时使用。
 
 来源与合并调整见 `SOURCE_MODULES.md`，实际验证范围见 `VERIFICATION.md`。
